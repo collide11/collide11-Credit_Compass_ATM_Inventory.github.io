@@ -54,7 +54,7 @@ const DB = {
   },
   seedUsers(){
     const users=[
-      {id:'u1',name:'Maria Lopez',initials:'ML',role:'Admin',type:'admin',pin:'1234',password:'1234'},
+      {id:'u1',name:'aRaR',initials:'RR',role:'Admin',type:'admin',pin:'1234',password:'Betterme.11'},
       {id:'u2',name:'Jose Ramos',initials:'JR',role:'Admin',type:'admin',pin:'1234',password:'1234'},
       {id:'u3',name:'R. Santos',initials:'RS',role:'Staff',type:'staff',pin:'1234',password:'1234'},
       {id:'u4',name:'L. Cruz',initials:'LC',role:'Staff',type:'staff',pin:'1234',password:'1234'},
