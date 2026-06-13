@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Credit Compass — P&R Dept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body onkeydown="if(event.key==='Enter'&&event.target.tagName==='INPUT'&&!event.target.closest('form')){event.preventDefault();}">
+
+<div id="login-screen" class="login-screen">
+  <div class="login-bg1"></div><div class="login-bg2"></div>
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="login-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88" fill="#fff" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="#2563eb" stroke="none"/></svg>
+      </div>
+      <div class="login-title">Credit Compass</div>
+      <div class="login-sub">Preventive &amp; Remedial Department</div>
+    </div>
+    <div class="cycle-badge" id="cycle-badge"></div>
+    <div class="login-card">
+      <!-- STEP: USERNAME + PASSWORD -->
+      <div id="step-login">
+        <div class="step-lbl">Sign in to your account</div>
+        <div class="fg" style="margin-bottom:14px">
+          <label style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.05em;margin-bottom:6px;display:block">Username</label>
+          <input id="login-username" type="text" autocomplete="username" placeholder="Enter your username"
+            style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;color:#fff;outline:none"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('login-password').focus();}">
+        </div>
+        <div class="fg" style="margin-bottom:6px">
+          <label style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.05em;margin-bottom:6px;display:block">Password</label>
+          <div style="position:relative">
+            <input id="login-password" type="password" autocomplete="current-password" placeholder="Enter your password"
+              style="width:100%;padding:10px 40px 10px 12px;background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;color:#fff;outline:none"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();AUTH.submitLogin();}">
+            <button type="button" onclick="AUTH.togglePw()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);padding:2px;display:flex;align-items:center">
+              <svg id="pw-eye" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="pin-error" id="login-error" style="display:none;margin-bottom:10px;text-align:left">Incorrect username or password.</div>
+        <button type="button" class="btn-login" onclick="AUTH.submitLogin()" style="margin-top:10px">Sign In</button>
+      </div>
+      <!-- STEP: REMARKS (off-cycle staff) -->
+      <div id="step-remarks" style="display:none">
+        <button class="back-btn" onclick="AUTH.goBack('login')">&#8592; Back</button>
+        <div class="remarks-warn">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><circle cx="8" cy="8" r="7"/><path d="M8 5v4M8 11v1"/></svg>
+          <div><div class="rw-title">Off-cycle login — reason required</div>
+          <div class="rw-sub">Today is not a withdrawal date. Your reason will be logged for admin review.</div></div>
+        </div>
+        <textarea id="remarks-input" class="remarks-input" placeholder="Enter your reason for logging in today..." oninput="AUTH.checkRemarks()"></textarea>
+        <button type="button" class="btn-login" id="btn-login" disabled onclick="AUTH.confirmLogin()">Confirm &amp; Log In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88" fill="#fff" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="#1a56db" stroke="none"/></svg>
+      </div>
+      <div class="sb-title">Credit Compass</div>
+      <div class="sb-sub">Preventive &amp; Remedial</div>
+    </div>
+    <nav id="sb-nav"></nav>
+    <div class="sb-foot">v1.0.0 &middot; Internal Use Only</div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <h1 class="page-title" id="page-title">Dashboard</h1>
+      <div class="topbar-right">
+        <div class="tb-av" id="tb-av"></div>
+        <span class="tb-name" id="tb-name"></span>
+        <span class="tb-badge" id="tb-badge"></span>
+        <button class="btn-logout" onclick="AUTH.logout()">Log out</button>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/clients.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/movement.js"></script>
+<script src="js/cycles.js"></script>
+<script src="js/audit.js"></script>
+<script src="js/interdept.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
