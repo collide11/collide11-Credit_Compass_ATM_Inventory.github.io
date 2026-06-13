@@ -56,7 +56,7 @@ const DB = {
     const users=[
       {id:'u1',name:'aRaR',initials:'RR',role:'Admin',type:'admin',pin:'1234',password:'Betterme.11'},
       {id:'u2',name:'Jose Ramos',initials:'JR',role:'Admin',type:'admin',pin:'1234',password:'1234'},
-      {id:'u3',name:'R. Santos',initials:'RS',role:'Staff',type:'staff',pin:'1234',password:'1234'},
+      {id:'u3',name:'Clyde F',initials:'CF',role:'Staff',type:'staff',pin:'1234',password:'3214'},
       {id:'u4',name:'L. Cruz',initials:'LC',role:'Staff',type:'staff',pin:'1234',password:'1234'},
       {id:'u5',name:'M. Diaz',initials:'MD',role:'Staff',type:'staff',pin:'1234',password:'1234'},
       {id:'u6',name:'B. Reyes',initials:'BR',role:'Staff',type:'staff',pin:'1234',password:'1234'},
